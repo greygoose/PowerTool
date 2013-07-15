@@ -1,0 +1,6 @@
+*.bak
+*.old
+*.tmp
+*.rej
+*.swp
+*~
