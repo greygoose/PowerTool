@@ -1,0 +1,7 @@
+type,code,name
+"cpu","F0180","fltProcessorUnitVoltageThresholdNonRecoverable"
+"memory","F0184","fltMemoryUnitDegraded"
+"memory","F0185","fltMemoryUnitInoperable"
+"memory","F0537","fltMemoryBufferUnitThermalThresholdNonRecoverable"
+"memory","F0191","fltMemoryArrayVoltageThresholdNonRecoverable"
+"memory","F0188","fltMemoryUnitThermalThresholdNonRecoverable"
