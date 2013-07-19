@@ -1,0 +1,67 @@
+
+<html>
+	<head>
+		<title> UCS PowerTool and Instant Gratification </title>
+	</head>
+	<body>
+	
+		<h1> UCS PowerTool and Instant Gratification </h1>
+
+Integrating software with infrastructure components can be an onerous and time-consuming effort.  It often involves late night searches for 
+documentation and code examples, fueled by copious amounts of caffeine.   More often, client code must be refactored, recompiled and redeployed 
+because of missing data or unexpected results from the targeted system.  In my experience, early integration and robust client 
+libraries are critical in avoiding surprises and expediting the development/integration process.  Ideally, integrators could issue commands 
+that target infrastructure in the same way that a Windows user issues commands in a DOS shell.  This ease of use is integration is achieved by 
+the UCS PowerTool library.
+
+<p>
+
+System integrators and administrators can get "instant-gratification" by issuing query and configuration commands through the UCS PowerTool command-line.
+These commands can be grouped in a transaction and can target one, or many UCS domains - even if the target domains are running different
+versions of UCS software.  For more compicated operations, commands can be called from a PowerTool script.  
+Alas, the purpose of this article is not to describe the virtues of UCS PowerTool, but, to get you to experience it for yourself.
+
+<p>
+Perhaps the best way to get started with PowerShell is by using it to perform common administrative task.   So, let's consider a common task 
+and use PowerShell to accomplish it.   How about generating a html report of all the identities used in our UCS domains (wwns, uuids, ip addresses, iqns).  
+We can do this with only a few simple commands!
+
+
+<ul>
+	<li> First, we need to connect to multiple UCS domains.  We just have to remember to set the "SupportMultipeDefaultUcs" flag. </li>
+<pre>
+Set-UcsPowerToolConfiguration -SupportMultiplDefaultUcs $true
+Connect-Ucs 10.29.141.18
+Connect-Ucs 10.29.141.21
+Get-UcsPSSession
+</pre>
+	<li> We can query any of the identities based on their UCS class name.  We can format them to extract the fields we wish to view.</li>
+<pre>
+	Get-UcsMacPoolAddr | Format-Table  ucs,id,assigned,owner,assignedToDn
+	Get-UcsUuidPoolAddr  | Format-Table ucs,id,assigned,owner,assignedToDn
+	Get-UcsFcPoolAddr  | Format-Table ucs,id,assigned,owner,assignedToDn
+	Get-UcsIpPoolAddr  | Format-Table ucs,id,assigned,owner,assignedToDn
+        Get-UcsIqnPoolAddr  | Format-Table ucs,name,assigned,owner,assignedToDn
+
+</pre>
+	<li> The following commands can be used to identify duplicate identities.  The same approach could be used for each type of identity. </li>
+
+	<pre>
+	$lMacs Get-UcsMacPoolAddr | Format-Table  ucs,id,assigned,owner,assignedToDn
+        $lMacs | Group-Object {$_.id} | Where-Object {$_.count -gt 1 } | select -ExpandProperty Group |  select Ucs,Id,assigned,assignedToDn | sort-object id
+	</pre>
+
+	<li> Now, we have all the information that we need from UCS.  Next, we can use PowerSell call these commands and output the results as a report.
+	Here is a simple example of a IdentityReport PowerShell script that produced the following Report.
+     </li>
+</ul>
+
+This is just a simple example that illustrates how easy it is to extract mult-domain UCS configuration information.  
+A more involved example of extracting and merging UCS Identity information for creating identity pools can be found here:
+
+</body>
+
+
+
+
+
