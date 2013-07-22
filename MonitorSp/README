@@ -4,7 +4,6 @@ MonitorSp
 To get a usage message:
 	MonitorSp 
 
-
 A simple demo script to illustrate the UCS XML API and PowerTool libraries.
 It is intended to monitor a service profile that is associated with physical 
 hardware via a compute pool.  If a fatal fault occurs, it decomissions 
@@ -36,6 +35,7 @@ To monitor service profile Bill polling every 10 minutes:
 To monitor service profile Bill polling every 5 minutes and fail-over if the user
 updates the physical nodes user label to "SIM FAILURE"
 	MonitorSp -ucsip 10.29.141.18 -poll 300 -spdn org-root/ls-VmScale" -sim
+
 
 
 
