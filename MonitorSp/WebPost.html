@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<title> Automatic Service Profile Fail-Over</title>
+	</head>
+	<body>
+	
+		<h1> Automatic Service Profile Fail-Over </h1>
+		
+		<p>
+		One of the great things about UCS Manager is that you have complete access to the Management Information Tree (configuration management database) for 
+a UCS domain that can scale to 160 servers.  Integrators can use the client integration technology of their choice to configure, manage and monitor a UCS domain.
+This allows integrators to focus on the problem they wish to solve, rather than the intricacies of a proprietary interface.  
+A great example of this ease of integration is the automatic service profile fail-over script that I demonstrated at Cisco Live.  
+You can download the sample code from here:
+</p>
+
+<a href="https://github.com/greygoose/PowerTool/tree/master/MonitorSp">MonitorSp</a>.  
+
+<p>
+The script periodically polls the UCS Manager to determine the health of a named service profile.  If the physical server associated with the service profile
+has a fatal fault (based on a csv file of fatal faults), the script will decommission the server.  When a server is decommissioned and the service profile
+is associated with a compute pool, UCS Manager will automatically associate the service profile with another available server.   
+This advanced functionality is based on 5 PowerTool cmdlets listed below:
+</p>
+
+Get SP Hierarchy: 
+<code>
+$lSpMos = (Get-UcsServiceProfile -dn $aInSpDn -hierarchy)   
+</code>
+   
+Get Blade Hierarchy: 
+<code>
+$lBladeMos = (Get-UcsManagedObject -dn $aInDn -hierarchy)
+</code>
+
+Delete our requirement:  
+<code>
+Get-UcsServiceProfile -dn $aInSpDn | Disconnect-UcsServiceProfile -force
+</code>
+
+Decomission our blade:
+<code>
+Set-UcsManagedObject -force -XmlTag computeBlade -PropertyMap @{dn = $lPnDn ; lc= "decommission"}
+</code>
+
+Associate a service profile with a blade:
+<code>
+Get-UcsServiceProfile -dn $aInSpDn | Associate-UcsServiceProfile -ServerPoolName $lPoolName -force
+</code>
+
+This script illustrates some real UCS product differentiators:
+<ul>
+	<li> UCS Manager can be used to quickly repurpose hardware, expand computing capacity, and replace failed hardware resources;
+	<li> Service profiles can assure that hardware configuration is identical right down to the bios settings and firmware versions;
+	<li> UCS faults can be easily queried and are automatically correlated (as a child of the object that the fault was observed on);
+	<li> Server pools provide a means to identity migration targets ahead of time; The personality of the server is applied at association time. 
+</ul>
+
+This script was created for illustrative purposes only.  Creating a robust and fault tolerant UCS deployment is more involed problem and will often include:
+<ul>
+	<li> Monitoring server health - snmp, call-home, querying faults and statistics;
+        <li> Integration with software stack - both application and process monitoring;
+	<li> Safety mechanisms: throttling migration, integration with existing monitoring processes (to prevent compounding the problem);
+</ul>
+
+Enjoy
+
+Ike
+
+</body>
+
+
+
