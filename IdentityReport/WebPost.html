@@ -31,7 +31,7 @@ We require only a hand-full of cmdlets to do this and we can check our results a
 </p>
 
 <p>
-First, we need to connect to multiple UCS domains.  We just have to remember to set the "SupportMultipeDefaultUcs" flag. </li>
+First, we need to connect to multiple UCS domains.  We just have to remember to set the "SupportMultipeDefaultUcs" flag. 
 </p>
 
 <pre>
@@ -41,7 +41,7 @@ First, we need to connect to multiple UCS domains.  We just have to remember to 
 	Get-UcsPSSession
 
 
-We can query any of the identities based on their UCS class name.  We can format them to extract the fields we wish to view.</li>
+We can query any of the identities based on their UCS class name.  We can format them to extract the fields we wish to view.
 
 <pre>
 	Get-UcsMacPoolAddr | Format-Table  ucs,id,assigned,owner,assignedToDn
@@ -53,7 +53,7 @@ We can query any of the identities based on their UCS class name.  We can format
 </pre>
 
 <p>
-The following cmdlets can be used to identify duplicate identities.  The same approach could be used for each type of identity. </li>
+The following cmdlets can be used to identify duplicate identities.  The same approach could be used for each type of identity. 
 </p>
 
 <pre>
