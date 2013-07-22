@@ -1,0 +1,76 @@
+Migrate UCS Identity 
+
+To get a usage message, run :
+
+	MigrateUCS-Identity 
+
+
+MigrateUCS-Identity will combine UCS identity pools from various sources and generate an xml configuration
+that can be posted to UCS central.  The identity sources will typically be UCS systems but, can also be CSV files 
+(perhaps created a previous run of this script). A number of files are created by the script - however, the
+most important is the XML command file that can be posted to UCS central.  
+
+
+Generated Files
+
+Log file (for debuging only)                 : migrate.log
+CSV file with merged ids                     : migrate.csv
+XML file that contains UCS central commands: : migrate.xml
+CSV id file for each ucs system              : <system-ip>-ids.csv (with -cvsperucs flag)
+
+
+Supported Options:
+
+-keepuuidprefix                                - the uuid prefix is cleared (set to all zeros) by default for 
+                                                 uuid pools.  This option preserves the prefix.
+-csvperucs 			                 - create a csv file for each ucs system (for archive purposes).
+-overwrite                                     - over-write existing files if they exist
+-logFile <log-filename>                        - set the logfilename (default is migrate.log)
+-commandFile <command-filename>                - set the command-filename (default is migrate.xml)
+-outIdFile <out-id-filename>  	         - set the csv filename for the merged identities
+-inIdFiles <in-id-filename>[,<in-id-filename>] - list of csv files to merge
+-ucsips <ucs-ip>[,<ucs-ip>]                    - list of ucs ip addresses
+
+
+Typical Usage
+ 
+Example 1: 
+
+To merge the identities of two ucs systems, over-writing files (with same name) and
+creating csv files describing ids each ucs system (for archival purposes):
+
+MigrateUCS-Identity.ps1 -overwrite -ucs 10.29.141.18,10.29.141.21 -csvperucs 
+
+
+Example 2: 
+To merge the identities from two ucs systems and two csv files, over-writing files (with same name)
+
+MigrateUCS-Identity.ps1 -overwrite -ucs 10.29.141.18,10.29.141.21 -idFiles 10.29.141.33-ids.csv,10.29.141.36-ids.csv  -csvperucs 
+
+Details:
+
+Where possible, the script attempts to combine the identities from various sources with-out any modification.  
+However, this is not always possible due to name conflicts or over-lapping blocks.  Below, we list some scenarios
+where the data must be massaged in order to have a valid configuration.
+
+i) Uuid pools with the distinguished name but different prefixes will be renamed.   
+   The new name will contain the  suffix "-RENAME".  A warning message is printed if this happens.
+
+ii) IQN pools with the distinguished name but different prefixes will be renamed.   The new name will contain the  
+    suffix "-RENAME".  A warning message is printed if this happens.
+iii) Any over-lapping identity blocks in a pool will be combined to create a new compound block;
+
+iv) Since the maximum UCS block size is 1000 identities, any blocks with > 1000 identities will be broken down 
+    into multiple blocks.  
+
+v) WWN pools with the same name but different purposes will be renamed.  WWN node and port pools will be renamed with
+   suffix "-RENAME_NP".  WWN node pools will be renamed "-RENAME_NODE".  WWN port pools will not be renamed.
+
+vi) When pools with different assignment order are merged, a warning message is printed;
+
+vii) Ip pools can be merged, however, a warning message will be printed if blocks in the pool have different
+     primary dns, secondary dns, subnet or default gateway.
+
+
+
+
