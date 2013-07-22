@@ -21,14 +21,13 @@ Alas, the purpose of this article is not to describe the virtues of UCS PowerToo
 </p>
 
 <p>
-Perhaps the best way to get started with PowerShell is by using it to perform common administrative task.   
-The following example is one that I presented at Cisco Live 2013.  It illustrates the use of PowerTool 
-to generate a multi-domain html report of all the UCS identities (wwns, uuids, ip addresses, iqns).  
-We require only a hand-full of cmdlets to do this and we can check our results as we go progress.
+Perhaps the best way to get started with PowerShell is by using it to perform a common administrative task.   
+The example I will use is to generate a multi UCS domain identity (wwn, uuid, ip, iqn) report.  This script
+requires only a hand-full of PowerTool cmdlets to produce a useful report (and it was demonstrated it at Cisco Live 2013).
 </p>
 
 <p>
-First, we need to connect to multiple UCS domains.  We just have to remember to set the "SupportMultipeDefaultUcs" flag. 
+Our first step is to connect to multiple UCS domains.  We just have to remember to set the "SupportMultipeDefaultUcs" flag. 
 </p>
 
 <pre>
