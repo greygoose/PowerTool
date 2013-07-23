@@ -92,10 +92,6 @@ function getDocHead()
 		<script src="resources/jquery-1.9.1.js"></script>
 		<script src="resources/ui/1.10.3/jquery-ui.js"></script>
 	</head>
-	<style>
-		tr:nth-child(even) {background: #CCC}
-		tr:nth-child(odd) {background: #FFF}
-	</style>
 
 	<body>
 		<div id="tabs">

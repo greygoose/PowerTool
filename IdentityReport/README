@@ -11,12 +11,12 @@ Usage:
 
 Get an identity report for the listed ucs domains:
 
-	IdentityReport -ucsips <ucs-ip1,ucs-ip2> -report IdReport.html
+	IdentityReport.ps1 -ucsips <ucs-ip1,ucs-ip2> -report IdReport.html
 
 Example:
 
 To see report of identities on two ucs domains:
 
-	ShowIdentity -ucsips 10.29.141.18,10.29.141.21 -report IdReport.html
+	IdentityReport.ps1 -ucsips 10.29.141.18,10.29.141.21 -report IdReport.html
 
 
