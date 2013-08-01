@@ -1,0 +1,32 @@
+
+Syncing a service profile from one domain to another:
+
+Import-Module CiscoUcsPS
+$devnull = set-ucspowertoolconfiguration -supportmultipledefaultucs $true
+ 
+$ip1 = "1.2.3.4"
+$ip2 = "2.3.4.5"
+$srcorg = "org-root"
+$destorg = "org-root"
+$spname = "bob"
+ 
+$cred1 = Get-Credential
+$cred2 = Get-Credential
+ 
+$ucs1 = Connect-Ucs $ip1 -Credential $cred1
+$ucs2 = Connect-Ucs $ip2 -Credential $cred2
+ 
+$srcorgmo = Get-UcsManagedObject -Dn $srcorg -Ucs $ucs1
+$destorgmo = Get-UcsManagedObject -Dn $destorg -Ucs $ucs2
+ 
+$srcsp = $srcorgmo | Get-UcsServiceProfile -LimitScope -Hierarchy -Ucs $ucs1 -name $spname -type instance
+$destsp = $destorg | get-ucsserviceprofile -LimitScope -Hierarchy -ucs $ucs2 -Name $spname -Type instance
+ 
+$diff = @()
+ 
+$diff = Compare-UcsManagedObject @($destsp) @($srcsp)
+ 
+Sync-UcsMo -ucs $ucs2 ($diff) -force
+
+
+
