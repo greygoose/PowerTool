@@ -8,15 +8,18 @@
 
 #
 #
-# A simple demo script to illustrate the UCS XML API and PowerTool libraries.
-# This script queries the entire UCS MIT and saves the response in an xml file
-# for off-line processing.
+# A simple demo script for the UCS XML API and PowerTool libraries.
+#
+# This script produces the following artifacts:
+# 1) Full State backup
+# 2) Config All backup
+# 3) UCS MIT snap-shot - queries children of topRoot hierarchically and stores in xml file for off-line processing.
 # 
 # Examples:
 #
 # To backup the MIT
 # 
-# 	BackupMit.ps1 -ucsip 10.29.141.18 -backupDir 'c:\Backups'
+# 	BackupMit.ps1 -ucsip 10.29.141.18 -user admin -password="Nbv12345" -backupDir 'c:\Backups'
 #
 
 
@@ -28,6 +31,8 @@
 Param(
 	$disallowunnamed,
 	[string] $ucsip,
+	[string] $user,
+	[string] $password,
 	[string] $backupDir
 )
 
@@ -52,15 +57,12 @@ function printUsage([string] $aInMsg)
 	Write-Host $aInMsg
 	Write-Host ""
 	Write-Host "Usage: "
-	Write-Host "	BackupMit -ucsip <ucs-ip> -outfile=<filename>"
+	Write-Host "	BackupMit.ps1 -ucsip <ip-address> -user <ucs-username> -password=<ucs-password>  -backupDir <backup-directory>"
 	Write-Host ""
-	Write-Host "Supported Options:"
-	Write-Host "	-outfile<filename>         - backup file to store MIT in "
-        Write-Host ""
         Write-Host ""
 	Write-Host "Example:"
 	Write-Host ""
-	Write-Host "	BackupMit -ucsip 10.29.141.18 -file=backup.xml"
+	Write-Host "	BackupMit.ps1 -ucsip 10.29.141.18 -user admin -password=\"Nbv12345\" -backupDir \'c:\Backups\'"
 	Write-Host ""
 
 	exit 1
@@ -80,23 +82,34 @@ if ($disallowunnamed)
 {
 	printUsage "You have extraneous command line options"
 }
-if ($outfile -eq "")
+if ($ucsip -eq "")
 {
-	printUsage "Error, no backup file specified"
+	printUsage "Error, no ucs ip provided"
+}           
+if ($user -eq "")
+{
+	printUsage "Error, no ucs username provided"
+}           
+if ($password -eq "")
+{
+	printUsage "Error, no ucs password"
 }           
 
-${lUcsCred} = Get-Credential
+
 
 try 
 {
-	${myCon} = Connect-Ucs -Name $ucsip -Credential ${lUcsCred} -ErrorAction SilentlyContinue
+	$passwordSecure = ConvertTo-SecureString -AsPlainText -Force -string $password
+	$cred = New-Object System.Management.Automation.PSCredential($user, $passwordSecure)
+	Connect-Ucs $ucsip -Credential $cred
+
 	$lSession = Get-UcsPSSession 
         $lCookie = $lSession.cookie 
         $lName = $lSession.name
 
-        $lFullStatePattern = $backupDir + '\${ucs}-${yyyy}-${dd}-${MM}-${HH}${mm}-config-system.tar.gz'
-        $lConfigAllPattern = $backupDir + '\${ucs}-${yyyy}-${dd}-${MM}-${HH}${mm}-config-all.xml'
-        $lMitFilename= $backupDir + '\' + $lName + "{0:yyyy-MM-dd-HHmm}-MIT.xml" -f (Get-Date)
+        $lFullStatePattern = $backupDir + '\${ucs}-${yyyy}-${dd}-${MM}-${HH}-${mm}-config-system.tar.gz'
+        $lConfigAllPattern = $backupDir + '\${ucs}-${yyyy}-${dd}-${MM}-${HH}-${mm}-config-all.xml'
+        $lMitFilename= $backupDir + '\' + $lName + "{0:yyyy-MM-dd-HH-mm}-MIT.xml" -f (Get-Date)
 
 	Write-Host "Running a full-state backup of the system"
         # Write-Host "Full State: " $lFullStatePattern
@@ -123,8 +136,6 @@ finally
 {
 	Disconnect-Ucs
 }
-
-
 
 
 

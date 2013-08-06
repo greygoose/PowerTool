@@ -1,0 +1,16 @@
+BackupMit
+
+A demo script for the UCS XML API and PowerTool libraries.
+
+This script produces the following artifacts:
+
+1) Full State backup
+2) Config All backup
+3) UCS MIT snap-shot - hierarchical query of topRoot children. 
+
+Example:
+
+	BackupMit.ps1 -ucsip <ucs-vip> -user <ucs-user-name> -password=<ucs-password> -backupDir 'c:\Backups'
+
+
+
