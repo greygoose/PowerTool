@@ -12,5 +12,12 @@ Example:
 
 	BackupMit.ps1 -ucsip <ucs-vip> -user <ucs-user-name> -password=<ucs-password> -backupDir 'c:\Backups'
 
+Artifacts would be of following form:
+
+    10.29.141.21-2013-08-06014-50-MIT.xml
+    nikon-2013-08-06-14-51-config-all.xml
+    nikon-2013-08-06-14-50-config-system.tar.gz
+
+
 
 
